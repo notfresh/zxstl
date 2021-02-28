@@ -2,15 +2,29 @@
 #define _VECTOR_IMPL_H_
 
 namespace TinySTL{
-	//***********************¹¹Ôì£¬¸´ÖÆ£¬Îö¹¹Ïà¹Ø***********************
+	//***********************æ„é€ ï¼Œå¤åˆ¶ï¼Œææ„ç›¸å…³***********************
 	template<class T, class Alloc>
 	vector<T, Alloc>::~vector(){
 		destroyAndDeallocateAll();
 	}
+
+	
+	template<class T, class Alloc>
+	void vector<T, Alloc>::allocateAndFillN(const size_type n, const value_type& value){
+		// important
+		start_ = dataAllocator::allocate(n);		
+		TinySTL::uninitialized_fill_n(start_, n, value);
+		finish_ = endOfStorage_ = start_ + n;
+	}
+	
+	// n: int or other size_type , the  size of the vector
 	template<class T, class Alloc>
 	vector<T, Alloc>::vector(const size_type n){
 		allocateAndFillN(n, value_type());
 	}
+	
+	
+	
 	template<class T, class Alloc>
 	vector<T, Alloc>::vector(const size_type n, const value_type& value){
 		allocateAndFillN(n, value);
@@ -18,7 +32,7 @@ namespace TinySTL{
 	template<class T, class Alloc>
 	template<class InputIterator>
 	vector<T, Alloc>::vector(InputIterator first, InputIterator last){
-		//´¦ÀíÖ¸ÕëºÍÊı×Ö¼äµÄÇø±ğµÄº¯Êı
+		//å¤„ç†æŒ‡é’ˆå’Œæ•°å­—é—´çš„åŒºåˆ«çš„å‡½æ•°
 		vector_aux(first, last, typename std::is_integral<InputIterator>::type());
 	}
 	template<class T, class Alloc>
@@ -50,7 +64,7 @@ namespace TinySTL{
 		}
 		return *this;
 	}
-	//*************ºÍÈİÆ÷µÄÈİÁ¿Ïà¹Ø******************************
+	//*************å’Œå®¹å™¨çš„å®¹é‡ç›¸å…³******************************
 	template<class T, class Alloc>
 	void vector<T, Alloc>::resize(size_type n, value_type val = value_type()){
 		if (n < size()){
@@ -85,16 +99,16 @@ namespace TinySTL{
 		finish_ = newFinish;
 		endOfStorage_ = start_ + n;
 	}
-	//***************ĞŞ¸ÄÈİÆ÷µÄÏà¹Ø²Ù×÷**************************
+	//***************ä¿®æ”¹å®¹å™¨çš„ç›¸å…³æ“ä½œ**************************
 	template<class T, class Alloc>
 	typename vector<T, Alloc>::iterator vector<T, Alloc>::erase(iterator position){
 		return erase(position, position + 1);
 	}
 	template<class T, class Alloc>
 	typename vector<T, Alloc>::iterator vector<T, Alloc>::erase(iterator first, iterator last){
-		//Î²²¿²ĞÁô¶ÔÏóÊı
+		//å°¾éƒ¨æ®‹ç•™å¯¹è±¡æ•°
 		difference_type lenOfTail = end() - last;
-		//É¾È¥µÄ¶ÔÏóÊıÄ¿
+		//åˆ å»çš„å¯¹è±¡æ•°ç›®
 		difference_type lenOfRemoved = last - first;
 		finish_ = finish_ - lenOfRemoved;
 		for (; lenOfTail != 0; --lenOfTail){
@@ -199,7 +213,7 @@ namespace TinySTL{
 	void vector<T, Alloc>::push_back(const value_type& value){
 		insert(end(), value);
 	}
-	//***********Âß¼­±È½Ï²Ù×÷Ïà¹Ø*******************
+	//***********é€»è¾‘æ¯”è¾ƒæ“ä½œç›¸å…³*******************
 	template<class T, class Alloc>
 	bool vector<T, Alloc>::operator == (const vector& v)const{
 		if (size() != v.size()){
@@ -263,12 +277,16 @@ namespace TinySTL{
 			dataAllocator::deallocate(start_, capacity());
 		}
 	}
-	template<class T, class Alloc>
-	void vector<T, Alloc>::allocateAndFillN(const size_type n, const value_type& value){
-		start_ = dataAllocator::allocate(n);
-		TinySTL::uninitialized_fill_n(start_, n, value);
-		finish_ = endOfStorage_ = start_ + n;
-	}
+	
+
+
+
+
+
+
+
+
+
 	template<class T, class Alloc>
 	template<class InputIterator>
 	void vector<T, Alloc>::allocateAndCopy(InputIterator first, InputIterator last){

@@ -1,3 +1,32 @@
+# 目录
+1_如何测试
+
+# 1_如何测试
+#TinySTL性能测试:
+
+
+####(1):vector&lt;int>
+
+    //std::vector<int> vec;
+    TinySTL::vector<int> vec;
+	ProfilerInstance::start();
+	int i = 0;
+	for (; i != 10000; ++i){
+		vec.push_back(i);
+	}
+	ProfilerInstance::finish();
+	ProfilerInstance::dumpDuringTime();
+    
+|container|quantity|time(ms)|  
+|---------|--------|--------|  
+|TinySTL::vector&lt;int>|10万|2|  
+|TinySTL::vector&lt;int>|100万|11|  
+|TinySTL::vector&lt;int>|1000万|129|  
+|std::vector&lt;int>|10万|6|  
+|std::vector&lt;int>|100万|16|  
+|std::vector&lt;int>|1000万|210| 
+
+
 TinySTL
 =======
 采用C++11实现一款简易的STL标准库，既是C++STL的一个子集（裁剪了一些容器和算法）又是一个超集（增加了一些容器和算法）

@@ -12,13 +12,16 @@
 
 namespace TinySTL{
 	//********* vector *************
-	template<class T, class Alloc = allocator<T>>
+	// here, the Alloc is the default allocator, which is defined in Allocator.h
+	template<class T, class  Alloc = allocator<T> >	
 	class vector{
 	private:
+		// the key members
 		T *start_;
 		T *finish_;
 		T *endOfStorage_;
-
+		
+		//////////////////////////核心技术点
 		typedef Alloc dataAllocator;
 	public:
 		typedef T									value_type;
@@ -32,19 +35,28 @@ namespace TinySTL{
 		typedef const T&							const_reference;
 		typedef size_t								size_type;
 		typedef ptrdiff_t	difference_type;
+
 	public:
-		//构造，复制，析构相关函数
+		
+		// the most common-used three constructors
 		vector()
-			:start_(0), finish_(0), endOfStorage_(0){}
-		explicit vector(const size_type n);
+			:start_(0), finish_(0), endOfStorage_(0){}		
+		explicit vector(const size_type n);	// in case of int maltransformed to vector, so with explicit		
 		vector(const size_type n, const value_type& value);
-		template<class InputIterator>
-		vector(InputIterator first, InputIterator last);
+		
+		//////////////////////////////////////
+		// 拷贝构造
+		vector(vector&& v);		
 		vector(const vector& v);
-		vector(vector&& v);
+		
+		//////////////////////////////////////
+		template<class InputIterator>
+		vector(InputIterator first, InputIterator last);				
+
+		~vector();		
 		vector& operator = (const vector& v);
 		vector& operator = (vector&& v);
-		~vector();
+		
 
 		//比较操作相关
 		bool operator == (const vector& v)const;
@@ -118,5 +130,6 @@ namespace TinySTL{
 	};// end of class vector
 }
 
-#include "Detail\Vector.impl.h"
+#include "Detail\Vector.impl.h" // this file shows the detail of the function bodies
+
 #endif

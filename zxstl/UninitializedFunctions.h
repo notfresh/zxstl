@@ -72,11 +72,14 @@ namespace TinySTL{
 		Size n, const T& x, _false_type);
 
 	template<class ForwardIterator, class Size, class T>
-	inline ForwardIterator uninitialized_fill_n(ForwardIterator first,
-		Size n, const T& x){
+
+
+	inline ForwardIterator uninitialized_fill_n(ForwardIterator first, Size n, const T& fill_value){
 		typedef typename _type_traits<T>::is_POD_type isPODType;
-		return _uninitialized_fill_n_aux(first, n, x, isPODType());
+		return _uninitialized_fill_n_aux(first, n, fill_value, isPODType());
 	}
+
+
 	template<class ForwardIterator, class Size, class T>
 	ForwardIterator _uninitialized_fill_n_aux(ForwardIterator first,
 		Size n, const T& x, _true_type){
